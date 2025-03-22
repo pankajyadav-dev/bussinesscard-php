@@ -1,0 +1,37 @@
+
+<<<<<<< HEAD
+
+/* Pattern overlay */
+=======
+>>>>>>> 5510730 (add feature to downlaod image of the card)
+.pattern-dots {
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: calc(10 * 1px) calc(10 * 1px);
+}
+
+<<<<<<< HEAD
+/* Gradient transitions */
+=======
+>>>>>>> 5510730 (add feature to downlaod image of the card)
+.gradient-transition {
+    transition: background-position 0.3s ease;
+    background-size: 200% auto;
+}
+
+.gradient-transition:hover {
+    background-position: right center;
+}
+
+<<<<<<< HEAD
+/* Card hover effects */
+=======
+
+>>>>>>> 5510730 (add feature to downlaod image of the card)
+.card-hover-effect {
+    transition: all 0.3s ease;
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-5px);
+}
+
