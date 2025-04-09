@@ -1,27 +1,13 @@
-<<<<<<< HEAD
-/* Custom styles for Business Card Creator */
-
-/* Global styles */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 :root {
     --primary-color: #3b82f6;
     --hover-color: #2563eb;
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-<<<<<<< HEAD
-/* Smooth transitions */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 a, button {
     transition: var(--transition);
 }
 
-<<<<<<< HEAD
-/* Enhanced QR Code container */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 #qrcode {
     padding: 20px;
     background: white;
@@ -31,10 +17,6 @@ a, button {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-<<<<<<< HEAD
-/* Improved form elements */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 input, textarea {
     transition: var(--transition);
     border-width: 2px;
@@ -45,10 +27,6 @@ input:focus, textarea:focus {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-<<<<<<< HEAD
-/* Enhanced card hover effects */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .card-hover-effect {
     transition: var(--transition);
 }
@@ -58,10 +36,6 @@ input:focus, textarea:focus {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-<<<<<<< HEAD
-/* Business card design styles */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .card-classic {
     font-family: 'Playfair Display', 'Times New Roman', serif;
 }
@@ -78,20 +52,12 @@ input:focus, textarea:focus {
     font-family: 'Inter', 'Helvetica', sans-serif;
 }
 
-<<<<<<< HEAD
-/* Profile image styling */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .profile-image {
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-<<<<<<< HEAD
-/* Enhanced alert styles */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .custom-alert {
     position: fixed;
     top: 24px;
@@ -125,20 +91,12 @@ input:focus, textarea:focus {
     color: white;
 }
 
-<<<<<<< HEAD
-/* Empty state illustrations */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .empty-state-icon {
     opacity: 0.7;
     max-width: 150px;
     margin: 0 auto;
 }
 
-<<<<<<< HEAD
-/* Page transitions */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .page-transition {
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -152,10 +110,6 @@ input:focus, textarea:focus {
     }
 }
 
-<<<<<<< HEAD
-/* Loading animation */
-=======
->>>>>>> 5510730 (add feature to downlaod image of the card)
 .loader {
     border: 3px solid #f3f3f3;
     border-radius: 50%;
