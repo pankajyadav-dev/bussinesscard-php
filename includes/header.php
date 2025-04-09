@@ -26,12 +26,10 @@ function isLoggedIn() {
                     Business Card Creator
                 </a>
                 
-                <!-- Mobile menu button -->
                 <button id="mobile-menu-button" class="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none p-2">
                     <i class="fas fa-bars text-xl sm:text-2xl"></i>
                 </button>
                 
-                <!-- Desktop menu -->
                 <div class="hidden lg:flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
                     <?php if(isLoggedIn()): ?>
                         <a href="<?php echo url('pages/cards/designs.php'); ?>" class="px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors">Card Designs</a>
@@ -45,7 +43,6 @@ function isLoggedIn() {
                 </div>
             </div>
             
-            <!-- Mobile menu -->
             <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-2">
                 <div class="flex flex-col space-y-2">
                     <?php if(isLoggedIn()): ?>

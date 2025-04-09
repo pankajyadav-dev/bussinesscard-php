@@ -90,7 +90,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Name is required";
     }
     
-    // Handle image upload
     if(isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $target_dir = "../../uploads/cards/";
         if (!is_dir($target_dir)) {
@@ -109,7 +108,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         
         if(empty($errors)) {
-            // Delete old image if exists
+            
             if(!empty($custom_fields['image'])) {
                 $old_image = "../../uploads/cards/" . $custom_fields['image'];
                 if(file_exists($old_image)) {
@@ -117,7 +116,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
             
-            // Generate unique filename using timestamp
+        
             $image_path = 'card_' . time() . '.' . $imageFileType;
             $target_file = $target_dir . $image_path;
             
