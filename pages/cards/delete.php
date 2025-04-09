@@ -28,6 +28,15 @@ if($stmt->rowCount() == 0) {
 }
 
 if(isset($_GET['confirm']) && $_GET['confirm'] == 'yes') {
+    $card = $stmt->fetch();
+    $custom_fields = json_decode($card['custom_fields'], true);
+    if(!empty($custom_fields['image'])) {
+        $image_path = "../../uploads/cards/" . $custom_fields['image'];
+        if(file_exists($image_path)) {
+            unlink($image_path);
+        }
+    }
+    
     $stmt = $pdo->prepare("DELETE FROM user_cards WHERE id = ? AND user_id = ?");
     
     if($stmt->execute([$card_id, $_SESSION['user_id']])) {
@@ -105,6 +114,16 @@ $design = $designs[$card['design_id']] ?? $designs[1];
                 <li>Company: <?php echo $custom_fields['company']; ?></li>
             </ul>
         </div>
+
+        <?php if(!empty($custom_fields['image'])): ?>
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-3">Card Image</h3>
+                <div class="w-32 h-32 rounded-lg overflow-hidden">
+                    <img src="<?php echo url('uploads/cards/' . $custom_fields['image']); ?>" 
+                         alt="Card image" class="w-full h-full object-cover">
+                </div>
+            </div>
+        <?php endif; ?>
         
         <div class="flex flex-col sm:flex-row gap-3">
             <a href="?id=<?php echo $card_id; ?>&confirm=yes" 

@@ -114,6 +114,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                            border-radius: 6px; margin-top: 20px; font-weight: bold; }
                     .info-item { margin-bottom: 12px; }
                     .info-label { font-weight: bold; color: #374151; }
+                    .profile-image { 
+                        width: 80px; height: 80px; 
+                        border-radius: 50%; 
+                        margin: 0 auto 15px; 
+                        border: 2px solid white;
+                        overflow: hidden;
+                    }
+                    .profile-image img { width: 100%; height: 100%; object-fit: cover; }
                 </style>
             </head>
             <body>
@@ -125,6 +133,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <div class='card'>
                         <div class='card-header'>
+                            " . (!empty($custom_fields['image']) ? "
+                            <div class='profile-image'>
+                                <img src='http://{$_SERVER['HTTP_HOST']}/uploads/cards/{$custom_fields['image']}' alt='Profile'>
+                            </div>" : "") . "
                             <h2>{$custom_fields['name']}</h2>
                             <p>{$custom_fields['job_title']}</p>
                             <p>{$custom_fields['company']}</p>

@@ -92,14 +92,22 @@ $designs = [
                             <div id="business-card-<?php echo $card['id']; ?>" class="border rounded-xl overflow-hidden shadow-2xl <?php echo $design['card_shadow']; ?> transform hover:scale-105 transition-transform duration-300">
                                 <div class="h-56 <?php echo $design['bg_color']; ?> flex flex-col items-center justify-center p-6 <?php echo $design['text_color']; ?> relative">
                                     <div class="absolute top-0 left-0 w-full h-full bg-black opacity-10 pattern-dots"></div>
-                                    <div class="relative z-10 text-center w-full max-w-md">
-                                        <h2 class="text-3xl font-bold mb-2 truncate px-4"><?php echo $custom_fields['name']; ?></h2>
-                                        <?php if(!empty($custom_fields['job_title'])): ?>
-                                            <p class="text-xl opacity-90 mb-1 truncate px-4"><?php echo $custom_fields['job_title']; ?></p>
+                                    <div class="relative z-10 w-full max-w-md flex items-center gap-4">
+                                        <?php if(!empty($custom_fields['image'])): ?>
+                                            <div class="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-white">
+                                                <img src="<?php echo url('uploads/cards/' . $custom_fields['image']); ?>" 
+                                                     alt="Profile" class="w-full h-full object-cover">
+                                            </div>
                                         <?php endif; ?>
-                                        <?php if(!empty($custom_fields['company'])): ?>
-                                            <p class="text-lg opacity-80 truncate px-4"><?php echo $custom_fields['company']; ?></p>
-                                        <?php endif; ?>
+                                        <div class="flex-grow text-left">
+                                            <h2 class="text-2xl font-bold mb-2 truncate"><?php echo $custom_fields['name']; ?></h2>
+                                            <?php if(!empty($custom_fields['job_title'])): ?>
+                                                <p class="text-lg opacity-90 mb-1 truncate"><?php echo $custom_fields['job_title']; ?></p>
+                                            <?php endif; ?>
+                                            <?php if(!empty($custom_fields['company'])): ?>
+                                                <p class="text-md opacity-80 truncate"><?php echo $custom_fields['company']; ?></p>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
                                 

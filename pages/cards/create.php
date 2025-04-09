@@ -66,6 +66,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $address = sanitizeInput($_POST['address']);
     
     $errors = [];
+    $image_path = '';
+    
+    if(isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $target_dir = "../../uploads/cards/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        
+        if($check === false) {
+            $errors[] = "File is not an image.";
+        } elseif ($_FILES["image"]["size"] > 3000000) {
+            $errors[] = "Sorry, your file is too large.";
+        } elseif (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            $errors[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        }
+        
+        if(empty($errors)) {
+            
+            $image_path = 'card_' . time() . '.' . $imageFileType;
+            $target_file = $target_dir . $image_path;
+            
+            if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                $errors[] = "Sorry, there was an error uploading your file.";
+            }
+        }
+    }
     
     if(empty($card_name)) {
         $errors[] = "Card name is required";
@@ -83,7 +112,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             'phone' => $phone,
             'email' => $email,
             'website' => $website,
-            'address' => $address
+            'address' => $address,
+            'image' => $image_path
         ]);
         
         $stmt = $pdo->prepare("
@@ -143,7 +173,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php endif; ?>
                 
-                <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?design_id=' . $design_id); ?>">
+                <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?design_id=' . $design_id); ?>" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="card_name" class="block text-gray-700 font-medium mb-2">Card Name <span class="text-red-500">*</span></label>
                         <input type="text" id="card_name" name="card_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo isset($card_name) ? $card_name : 'My Business Card'; ?>" required>
@@ -152,20 +182,36 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <hr class="my-6">
                     
-                    <div class="mb-4">
-                        <label for="name" class="block text-gray-700 font-medium mb-2">Full Name <span class="text-red-500">*</span></label>
-                        <input type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo isset($name) ? $name : $user['name']; ?>" required>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="mb-4">
-                            <label for="job_title" class="block text-gray-700 font-medium mb-2">Job Title</label>
-                            <input type="text" id="job_title" name="job_title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo isset($job_title) ? $job_title : $user['job_title']; ?>">
+                    <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="image" class="block text-gray-700 font-medium mb-2">Profile Image</label>
+                            <input type="file" id="image" name="image" accept="image/jpeg, image/png, gif" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   onchange="previewImage(this);">
+                            <p class="text-gray-500 text-sm mt-1">Maximum file size: 3MB. Allowed formats: JPG, PNG, GIF</p>
+                            <div id="imagePreview" class="mt-4 w-32 h-32 rounded-full overflow-hidden hidden">
+                                <img id="preview" src="#" alt="Preview" class="w-full h-full object-cover">
+                            </div>
                         </div>
-                        
-                        <div class="mb-4">
-                            <label for="company" class="block text-gray-700 font-medium mb-2">Company</label>
-                            <input type="text" id="company" name="company" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo isset($company) ? $company : $user['company']; ?>">
+
+                        <div>
+                            <div class="mb-4">
+                                <label for="name" class="block text-gray-700 font-medium mb-2">Full Name <span class="text-red-500">*</span></label>
+                                <input type="text" id="name" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                       value="<?php echo isset($name) ? $name : $user['name']; ?>" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="job_title" class="block text-gray-700 font-medium mb-2">Job Title</label>
+                                <input type="text" id="job_title" name="job_title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                       value="<?php echo isset($job_title) ? $job_title : $user['job_title']; ?>">
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="company" class="block text-gray-700 font-medium mb-2">Company</label>
+                                <input type="text" id="company" name="company" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                       value="<?php echo isset($company) ? $company : $user['company']; ?>">
+                            </div>
                         </div>
                     </div>
                     
@@ -197,5 +243,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+
+
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('preview');
+    const previewDiv = document.getElementById('imagePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewDiv.classList.remove('hidden');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 <?php require_once '../../includes/footer.php'; ?>

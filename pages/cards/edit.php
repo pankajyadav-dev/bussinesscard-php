@@ -90,6 +90,45 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Name is required";
     }
     
+    // Handle image upload
+    if(isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $target_dir = "../../uploads/cards/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $imageFileType = strtolower(pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION));
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        
+        if($check === false) {
+            $errors[] = "File is not an image.";
+        } elseif ($_FILES["image"]["size"] > 3000000) {
+            $errors[] = "Sorry, your file is too large.";
+        } elseif (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            $errors[] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        }
+        
+        if(empty($errors)) {
+            // Delete old image if exists
+            if(!empty($custom_fields['image'])) {
+                $old_image = "../../uploads/cards/" . $custom_fields['image'];
+                if(file_exists($old_image)) {
+                    unlink($old_image);
+                }
+            }
+            
+            // Generate unique filename using timestamp
+            $image_path = 'card_' . time() . '.' . $imageFileType;
+            $target_file = $target_dir . $image_path;
+            
+            if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                $errors[] = "Sorry, there was an error uploading your file.";
+            } else {
+                $custom_fields['image'] = $image_path;
+            }
+        }
+    }
+    
     if(empty($errors)) {
         $updated_custom_fields = json_encode([
             'name' => $name,
@@ -98,7 +137,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             'phone' => $phone,
             'email' => $email,
             'website' => $website,
-            'address' => $address
+            'address' => $address,
+            'image' => $custom_fields['image'] ?? null
         ]);
         
         $stmt = $pdo->prepare("
@@ -162,7 +202,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php endif; ?>
                 
-                <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?id=' . $card_id); ?>">
+                <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?id=' . $card_id); ?>" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="card_name" class="block text-gray-700 font-medium mb-2">Card Name <span class="text-red-500">*</span></label>
                         <input type="text" id="card_name" name="card_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="<?php echo $card['card_name']; ?>" required>
@@ -208,6 +248,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="mb-6">
                         <label for="address" class="block text-gray-700 font-medium mb-2">Address</label>
                         <textarea id="address" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2"><?php echo $custom_fields['address']; ?></textarea>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="image" class="block text-gray-700 font-medium mb-2">Profile Image</label>
+                        <?php if(!empty($custom_fields['image'])): ?>
+                            <div class="mb-3">
+                                <img src="<?php echo url('uploads/cards/' . $custom_fields['image']); ?>" 
+                                     alt="Current profile image" class="w-32 h-32 object-cover rounded-lg">
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p class="text-gray-500 text-sm mt-1">Maximum file size: 3MB. Allowed formats: JPG, PNG, GIF</p>
                     </div>
                     
                     <div class="flex flex-col sm:flex-row gap-3">

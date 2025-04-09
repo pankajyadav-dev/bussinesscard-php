@@ -74,8 +74,17 @@ foreach($designs as $design) {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <?php foreach($cat_designs as $design): ?>
                     <div class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
-                        <div class="h-36 sm:h-48 <?php echo $design['bg_color']; ?> flex items-center justify-center p-4 sm:p-6">
-                            <span class="text-white text-lg sm:text-xl font-bold text-center"><?php echo $design['name']; ?></span>
+                        <div class="h-36 sm:h-48 <?php echo $design['bg_color']; ?> flex items-center justify-center p-4 sm:p-6 relative">
+                            <div class="absolute top-0 left-0 w-full h-full bg-black opacity-10 pattern-dots"></div>
+                            <div class="relative z-10 flex items-center gap-4">
+                                <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-user text-2xl text-white/80"></i>
+                                </div>
+                                <div class="text-left">
+                                    <span class="text-lg sm:text-xl font-bold text-white"><?php echo $design['name']; ?></span>
+                                    <p class="text-sm text-white/80 mt-1">Sample Card</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="p-4 sm:p-6">
                             <h4 class="font-bold text-lg mb-2"><?php echo $design['name']; ?></h4>

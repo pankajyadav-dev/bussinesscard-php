@@ -98,14 +98,22 @@ $design = $designs[$card['design_id']];
                 <div id="business-card" class="border rounded-xl overflow-hidden shadow-2xl <?php echo $design['card_shadow']; ?> transform hover:scale-105 transition-transform duration-300">
                     <div class="h-56 <?php echo $design['bg_color']; ?> flex flex-col items-center justify-center p-6 <?php echo $design['text_color']; ?> relative">
                         <div class="absolute top-0 left-0 w-full h-full bg-black opacity-10 pattern-dots"></div>
-                        <div class="relative z-10 text-center">
-                            <h2 class="text-3xl font-bold mb-2"><?php echo $custom_fields['name']; ?></h2>
-                            <?php if(!empty($custom_fields['job_title'])): ?>
-                                <p class="text-xl opacity-90 mb-1"><?php echo $custom_fields['job_title']; ?></p>
+                        <div class="relative z-10 w-full max-w-md flex items-center gap-4">
+                            <?php if(!empty($custom_fields['image'])): ?>
+                                <div class="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-2 border-white">
+                                    <img src="<?php echo url('uploads/cards/' . $custom_fields['image']); ?>" 
+                                         alt="Profile" class="w-full h-full object-cover">
+                                </div>
                             <?php endif; ?>
-                            <?php if(!empty($custom_fields['company'])): ?>
-                                <p class="text-lg opacity-80"><?php echo $custom_fields['company']; ?></p>
-                            <?php endif; ?>
+                            <div class="text-left">
+                                <h2 class="text-3xl font-bold mb-2 truncate"><?php echo $custom_fields['name']; ?></h2>
+                                <?php if(!empty($custom_fields['job_title'])): ?>
+                                    <p class="text-xl opacity-90 mb-1 truncate"><?php echo $custom_fields['job_title']; ?></p>
+                                <?php endif; ?>
+                                <?php if(!empty($custom_fields['company'])): ?>
+                                    <p class="text-lg opacity-80 truncate"><?php echo $custom_fields['company']; ?></p>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                     
@@ -116,7 +124,7 @@ $design = $designs[$card['design_id']];
                                     <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
                                         <i class="fas fa-phone"></i>
                                     </div>
-                                    <span class="text-gray-700"><?php echo $custom_fields['phone']; ?></span>
+                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['phone']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
@@ -125,7 +133,7 @@ $design = $designs[$card['design_id']];
                                     <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
                                         <i class="fas fa-envelope"></i>
                                     </div>
-                                    <span class="text-gray-700"><?php echo $custom_fields['email']; ?></span>
+                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['email']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
@@ -134,7 +142,7 @@ $design = $designs[$card['design_id']];
                                     <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
                                         <i class="fas fa-globe"></i>
                                     </div>
-                                    <span class="text-gray-700"><?php echo $custom_fields['website']; ?></span>
+                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['website']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
@@ -143,7 +151,7 @@ $design = $designs[$card['design_id']];
                                     <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
                                         <i class="fas fa-map-marker-alt"></i>
                                     </div>
-                                    <span class="text-gray-700"><?php echo $custom_fields['address']; ?></span>
+                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['address']; ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>
