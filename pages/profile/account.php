@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     if (isset($_POST['change_password'])) {
-        $currentpassword = sanitizeInput($_POST['current_password']);
+        
         $newpassword = sanitizeInput($_POST['new_password']);
         $confirmpassword = sanitizeInput($_POST['confirm_password']);
         $password_errors = []; 
@@ -68,9 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $password_errors[] = "New password and confirm password do not match";
         }
         
-        if (!password_verify($currentpassword, $user['password'])) {
-            $password_errors[] = "Current password is incorrect";
-        }
+        
         
         if (empty($password_errors)) {
             try {
@@ -196,10 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <form method="POST" class="mb-4">
             <input type="hidden" name="change_password" value="1">
-                <div class="mb-4">
-                    <label for="current_password" class="block text-gray-700 font-medium mb-2">Current Password</label>
-                    <input type="password" id="current_password" name="current_password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
+                
                 
                 <div class="mb-4">
                     <label for="new_password" class="block text-gray-700 font-medium mb-2">New Password</label>

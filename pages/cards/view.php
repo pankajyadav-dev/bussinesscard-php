@@ -92,66 +92,66 @@ $design = $designs[$card['design_id']];
         <?php endif; ?>
     </div>
     
-    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-        <div class="flex flex-col md:flex-row gap-8">
-            <div class="w-full md:w-2/3 mx-auto">
-                <div id="business-card" class="border rounded-xl overflow-hidden shadow-2xl <?php echo $design['card_shadow']; ?> transform hover:scale-105 transition-transform duration-300">
-                    <div class="h-56 <?php echo $design['bg_color']; ?> flex flex-col items-center justify-center p-6 <?php echo $design['text_color']; ?> relative">
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6 rounded-xl">
+        <div class="flex flex-col md:flex-row gap-8 rounded-xl">
+            <div class="w-full md:w-2/3 mx-auto rounded-xl">
+                <div id="business-card" class="border rounded-xl overflow-hidden shadow-2xl <?php echo $design['card_shadow']; ?> transform hover:scale-105 transition-transform duration-300 w-full max-w-2xl mx-auto">
+                    <div class="min-h-[14rem] <?php echo $design['bg_color']; ?> flex flex-col items-center justify-center p-8 <?php echo $design['text_color']; ?> relative">
                         <div class="absolute top-0 left-0 w-full h-full bg-black opacity-10 pattern-dots"></div>
-                        <div class="relative z-10 w-full max-w-md flex items-center gap-4">
+                        <div class="relative z-10 w-full flex items-center gap-6">
                             <?php if(!empty($custom_fields['image'])): ?>
-                                <div class="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-2 border-white">
+                                <div class="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-white shadow-lg">
                                     <img src="<?php echo url('uploads/cards/' . $custom_fields['image']); ?>" 
                                          alt="Profile" class="w-full h-full object-cover">
                                 </div>
                             <?php endif; ?>
-                            <div class="text-left">
-                                <h2 class="text-3xl font-bold mb-2 truncate"><?php echo $custom_fields['name']; ?></h2>
+                            <div class="flex-1 min-w-0">
+                                <h2 class="text-2xl sm:text-3xl font-bold mb-2 break-words"><?php echo $custom_fields['name']; ?></h2>
                                 <?php if(!empty($custom_fields['job_title'])): ?>
-                                    <p class="text-xl opacity-90 mb-1 truncate"><?php echo $custom_fields['job_title']; ?></p>
+                                    <p class="text-lg sm:text-xl opacity-90 mb-1 break-words"><?php echo $custom_fields['job_title']; ?></p>
                                 <?php endif; ?>
                                 <?php if(!empty($custom_fields['company'])): ?>
-                                    <p class="text-lg opacity-80 truncate"><?php echo $custom_fields['company']; ?></p>
+                                    <p class="text-base sm:text-lg opacity-80 break-words"><?php echo $custom_fields['company']; ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="p-6 bg-white">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-8 bg-white">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <?php if(!empty($custom_fields['phone'])): ?>
-                                <a href="tel:<?php echo $custom_fields['phone']; ?>" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                                    <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
-                                        <i class="fas fa-phone"></i>
+                                <a href="tel:<?php echo $custom_fields['phone']; ?>" class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-12 h-12 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-4 flex-shrink-0">
+                                        <i class="fas fa-phone text-lg"></i>
                                     </div>
-                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['phone']; ?></span>
+                                    <span class="text-gray-700 break-all"><?php echo $custom_fields['phone']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
                             <?php if(!empty($custom_fields['email'])): ?>
-                                <a href="mailto:<?php echo $custom_fields['email']; ?>" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                                    <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
-                                        <i class="fas fa-envelope"></i>
+                                <a href="mailto:<?php echo $custom_fields['email']; ?>" class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-12 h-12 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-4 flex-shrink-0">
+                                        <i class="fas fa-envelope text-lg"></i>
                                     </div>
-                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['email']; ?></span>
+                                    <span class="text-gray-700 break-all"><?php echo $custom_fields['email']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
                             <?php if(!empty($custom_fields['website'])): ?>
-                                <a href="<?php echo $custom_fields['website']; ?>" target="_blank" class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                                    <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
-                                        <i class="fas fa-globe"></i>
+                                <a href="<?php echo $custom_fields['website']; ?>" target="_blank" class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-12 h-12 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-4 flex-shrink-0">
+                                        <i class="fas fa-globe text-lg"></i>
                                     </div>
-                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['website']; ?></span>
+                                    <span class="text-gray-700 break-all"><?php echo $custom_fields['website']; ?></span>
                                 </a>
                             <?php endif; ?>
                             
                             <?php if(!empty($custom_fields['address'])): ?>
-                                <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                                    <div class="w-10 h-10 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-3">
-                                        <i class="fas fa-map-marker-alt"></i>
+                                <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                    <div class="w-12 h-12 <?php echo $design['accent_color']; ?> rounded-full flex items-center justify-center <?php echo $design['text_color']; ?> mr-4 flex-shrink-0">
+                                        <i class="fas fa-map-marker-alt text-lg"></i>
                                     </div>
-                                    <span class="text-gray-700 truncate"><?php echo $custom_fields['address']; ?></span>
+                                    <span class="text-gray-700 break-all"><?php echo $custom_fields['address']; ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -238,23 +238,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.downloadCardImage = function() {
         const card = document.getElementById('business-card');
-        // Remove hover effect temporarily
-        card.style.transform = 'none';
+        const container = card.parentElement;
         
-        html2canvas(card, {
-            scale: 2, // Better quality
-            backgroundColor: null,
-            logging: false
-        }).then(canvas => {
-            const image = canvas.toDataURL("image/png");
-            const link = document.createElement('a');
-            link.download = 'business-card.png';
-            link.href = image;
-            link.click();
-            
-            // Restore hover effect
-            card.style.transform = '';
-        });
+        // Store original styles
+        const originalTransform = card.style.transform;
+        const originalTransition = card.style.transition;
+        const originalWidth = card.style.width;
+        
+        // Prepare card for capture
+        card.style.transform = 'none';
+        card.style.transition = 'none';
+        card.style.width = '1000px'; // Force larger width for better quality
+        
+        // Add slight delay to ensure styles are applied
+        setTimeout(() => {
+            html2canvas(card, {
+                scale: 2,
+                backgroundColor: null,
+                logging: false,
+                allowTaint: true,
+                useCORS: true,
+                width: card.offsetWidth,
+                height: card.offsetHeight,
+                onclone: function(clonedDoc) {
+                    const clonedElement = clonedDoc.getElementById('business-card');
+                    clonedElement.style.transform = 'none';
+                    clonedElement.style.boxShadow = 'none';
+                }
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/png", 1.0);
+                const link = document.createElement('a');
+                link.download = 'business-card.png';
+                link.href = image;
+                link.click();
+                
+                // Restore original styles
+                card.style.transform = originalTransform;
+                card.style.transition = originalTransition;
+                card.style.width = originalWidth;
+            });
+        }, 100);
     }
 });
 </script>
