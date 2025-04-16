@@ -43,123 +43,318 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if(empty($errors)) {
         $subject = $user['name'] . " shared a business card with you";
-
         $card_url = $_SERVER['HTTP_HOST'] . '/' . ltrim(BASE_URL, 'http://'. $_SERVER['HTTP_HOST'] . '/') . 'pages/cards/view.php?id=' . $card_id . '&share=true';
 
-        $designs = [
-            1 => [
-                'name' => 'Professional Design',
-                'category' => 'Professional',
-                'bg_color' => 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800',
-                'text_color' => 'text-white',
-                'accent_color' => 'bg-blue-500'
-            ],
-            2 => [
-                'name' => 'Creative Design',
-                'category' => 'Creative',
-                'bg_color' => 'bg-gradient-to-br from-pink-500 via-purple-500 to-purple-600',
-                'text_color' => 'text-white',
-                'accent_color' => 'bg-pink-400'
-            ],
-            3 => [
-                'name' => 'Minimalist Design',
-                'category' => 'Minimalist',
-                'bg_color' => 'bg-gradient-to-r from-gray-800 to-gray-900',
-                'text_color' => 'text-white',
-                'accent_color' => 'bg-gray-700'
-            ],
-            4 => [
-                'name' => 'Corporate Design',
-                'category' => 'Corporate',
-                'bg_color' => 'bg-gradient-to-r from-gray-600 to-gray-800',
-                'text_color' => 'text-white',
-                'accent_color' => 'bg-gray-500'
-            ]
-        ];
-
-        $design = $designs[$card['design_id']] ?? $designs[1];
-        
-  
-        $gradientColor = '';
-        switch($design['bg_color']) {
-            case 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800':
-                $gradientColor = 'linear-gradient(to bottom right, #2563eb, #1d4ed8, #1e40af)';
-                break;
-            case 'bg-gradient-to-br from-pink-500 via-purple-500 to-purple-600':
-                $gradientColor = 'linear-gradient(to bottom right, #ec4899, #a855f7, #9333ea)';
-                break;
-            case 'bg-gradient-to-r from-gray-800 to-gray-900':
-                $gradientColor = 'linear-gradient(to right, #1f2937, #111827)';
-                break;
-            case 'bg-gradient-to-r from-gray-600 to-gray-800':
-                $gradientColor = 'linear-gradient(to right, #4b5563, #1f2937)';
-                break;
+        // Improved image handling with base64 encoding
+        $imageData = '';
+        $imageType = '';
+        if(!empty($custom_fields['image'])) {
+            $image_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/cards/' . $custom_fields['image'];
+            if(file_exists($image_path)) {
+                $imageType = pathinfo($image_path, PATHINFO_EXTENSION);
+                $imageData = base64_encode(file_get_contents($image_path));
+                
+                // Handle various image types correctly
+                switch(strtolower($imageType)) {
+                    case 'jpg':
+                    case 'jpeg':
+                        $imageType = 'jpeg';
+                        break;
+                    case 'png':
+                        $imageType = 'png';
+                        break;
+                    case 'gif':
+                        $imageType = 'gif';
+                        break;
+                    case 'webp':
+                        $imageType = 'webp';
+                        break;
+                    default:
+                        $imageType = 'jpeg'; // Default to JPEG for unsupported formats
+                }
+            }
         }
 
         $body = "
-            <html>
-            <head>
-                <title>$subject</title>
-                <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; }
-                    .container { max-width: 600px; margin: 0 auto; }
-                    .card { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin: 20px 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-                    .card-header { background-image: $gradientColor; color: white; padding: 40px 20px; text-align: center; }
-                    .card-header h2 { margin: 0 0 10px 0; font-size: 24px; }
-                    .card-body { padding: 20px; background: white; }
-                    .btn { display: inline-block; background-color: " . ($design['accent_color'] === 'bg-blue-500' ? '#3b82f6' : 
-                          ($design['accent_color'] === 'bg-pink-400' ? '#f472b6' : 
-                          ($design['accent_color'] === 'bg-gray-700' ? '#374151' : '#6b7280'))) . "; 
-                           color: white; padding: 12px 24px; text-decoration: none; 
-                           border-radius: 6px; margin-top: 20px; font-weight: bold; }
-                    .info-item { margin-bottom: 12px; }
-                    .info-label { font-weight: bold; color: #374151; }
-                    .profile-image { 
-                        width: 80px; height: 80px; 
-                        border-radius: 50%; 
-                        margin: 0 auto 15px; 
-                        border: 2px solid white;
-                        overflow: hidden;
-                    }
-                    .profile-image img { width: 100%; height: 100%; object-fit: cover; }
-                </style>
-            </head>
-            <body>
-                <div class='container'>
-                    <p>Hello,</p>
-                    <p>{$user['name']} has shared a business card with you:</p>
-                    
-                    <p><em>\"$message\"</em></p>
-                    
-                    <div class='card'>
-                        <div class='card-header'>
-                            " . (!empty($custom_fields['image']) ? "
-                            <div class='profile-image'>
-                                <img src='http://{$_SERVER['HTTP_HOST']}/uploads/cards/{$custom_fields['image']}' alt='Profile'>
-                            </div>" : "") . "
-                            <h2>{$custom_fields['name']}</h2>
-                            <p>{$custom_fields['job_title']}</p>
-                            <p>{$custom_fields['company']}</p>
-                        </div>
-                        <div class='card-body'>
-                            <p class='info-item'><span class='info-label'>Email:</span> {$custom_fields['email']}</p>
-                            <p class='info-item'><span class='info-label'>Phone:</span> {$custom_fields['phone']}</p>
-                            <p class='info-item'><span class='info-label'>Website:</span> {$custom_fields['website']}</p>
-                            <p class='info-item'><span class='info-label'>Address:</span> {$custom_fields['address']}</p>
-                        </div>
-                    </div>
-                    
-                    <p>To view the full business card, click the button below:</p>
-                    <a href='http://$card_url' class='btn'>View Business Card</a>
-                    
-                    <p>If the button doesn't work, you can copy and paste this link into your browser: http://$card_url</p>
-                    
-                    <p>Regards,<br>Business Card Creator</p>
-                </div>
-            </body>
-            </html>
-        ";
-        
+                <!DOCTYPE html>
+                <html lang=\"en\">
+                <head>
+                    <meta charset=\"UTF-8\">
+                    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+                    <title>$subject</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
+                        .container { max-width: 600px; margin: 0 auto; background-color: #f3f4f6; padding: 20px; }
+                        .card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #ffffff; }
+                        .card-inner { background-color: #ffffff; border-radius: 12px; overflow: hidden; }
+                        .header { min-height: 224px; padding: 32px; position: relative; color: #ffffff; }
+                        .header-table { width: 100%; background-color: #2563eb; background: linear-gradient(to bottom right, #2563eb, #1d4ed8, #1e40af); }
+                        .pattern-dots { 
+                            position: absolute; 
+                            top: 0; left: 0; right: 0; bottom: 0;
+                            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+                            background-size: 8px 8px;
+                        }
+                        .header-content { 
+                            position: relative; 
+                            z-index: 10;
+                            display: table;
+                            width: 100%;
+                        }
+                        .profile-section {
+                            width: 128px;
+                            height: 128px;
+                            display: table-cell;
+                            vertical-align: top;
+                            padding-right: 24px;
+                        }
+                        .profile-image {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                            border: 4px solid white;
+                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                            overflow: hidden;
+                        }
+                        .profile-image img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
+                        .header-text { 
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .header-text h2 { 
+                            font-size: 30px;
+                            line-height: 36px;
+                            font-weight: bold;
+                            margin: 0 0 8px 0;
+                            color: #ffffff;
+                        }
+                        .header-text p { 
+                            margin: 4px 0;
+                            font-size: 20px;
+                            line-height: 28px;
+                            color: #ffffff;
+                        }
+                        .contact-grid {
+                            padding: 32px;
+                            width: 100%;
+                        }
+                        .contact-table {
+                            width: 100%;
+                            border-collapse: separate;
+                            border-spacing: 16px;
+                        }
+                        .contact-cell {
+                            width: 50%;
+                            vertical-align: top;
+                        }
+                        .contact-item {
+                            display: table;
+                            width: 100%;
+                            padding: 12px;
+                            background-color: #f8f9fa;
+                            border-radius: 8px;
+                            margin-bottom: 16px;
+                            text-decoration: none;
+                        }
+                        .icon-circle {
+                            width: 48px;
+                            height: 48px;
+                            border-radius: 50%;
+                            margin-right: 16px;
+                            display: table-cell;
+                            vertical-align: middle;
+                            text-align: center;
+                            background-color: #2563eb;
+                        }
+                        .icon-circle svg {
+                            display: inline-block;
+                            vertical-align: middle;
+                            color: #ffffff;
+                        }
+                        .contact-text {
+                            display: table-cell;
+                            vertical-align: middle;
+                            font-size: 14px;
+                            color: #374151;
+                        }
+                        .btn {
+                            display: inline-block;
+                            background-color: #3b82f6;
+                            color: #ffffff;
+                            padding: 12px 24px;
+                            border-radius: 6px;
+                            text-decoration: none;
+                            margin-top: 24px;
+                            font-weight: bold;
+                        }
+                        h1 {
+                            color: #1e40af;
+                            margin-top: 32px;
+                        }
+                        p {
+                            margin: 16px 0;
+                            color: #000000;
+                        }
+                        .message {
+                            font-style: italic;
+                            margin: 16px 0;
+                            color: #000000;
+                        }
+                        .link-info {
+                            margin-top: 20px;
+                            color: #000000;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            border-top: 1px solid #e5e7eb;
+                            padding-top: 20px;
+                            color: #000000;
+                        }
+                    </style>
+                </head>
+                <body style=\"margin: 0; padding: 0; background-color: #f3f4f6;\">
+                    <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#f3f4f6\">
+                        <tr>
+                            <td align=\"center\" style=\"padding: 20px;\">
+                                <table class=\"container\" width=\"600\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#f3f4f6\">
+                                    <tr>
+                                        <td>
+                                            <p style=\"color: #000000;\">Hello,</p>
+                                            <p style=\"color: #000000;\">{$user['name']} has shared a business card with you:</p>
+                                            " . (!empty($message) ? "<p class=\"message\" style=\"font-style: italic; color: #000000;\">\"$message\"</p>" : "") . "
+                                            
+                                            <table class=\"card\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" style=\"border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin: 20px 0;\">
+                                                <tr>
+                                                    <td>
+                                                        <table class=\"header-table\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#2563eb\" style=\"background-color: #2563eb; color: #ffffff;\">
+                                                            <tr>
+                                                                <td style=\"padding: 32px;\">
+                                                                    <table class=\"header-content\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                                                                        <tr>
+                                                                            " . (!empty($imageData) ? "
+                                                                            <td class=\"profile-section\" width=\"128\" style=\"padding-right: 24px;\">
+                                                                                <div class=\"profile-image\" style=\"width: 128px; height: 128px; border-radius: 50%; border: 4px solid white; overflow: hidden;\">
+                                                                                    <img src=\"data:image/{$imageType};base64,{$imageData}\" alt=\"Profile\" style=\"width: 100%; height: 100%; object-fit: cover;\">
+                                                                                </div>
+                                                                            </td>" : "") . "
+                                                                            <td class=\"header-text\" style=\"vertical-align: middle;\">
+                                                                                <h2 style=\"font-size: 30px; line-height: 36px; font-weight: bold; margin: 0 0 8px 0; color: #ffffff;\">{$custom_fields['name']}</h2>
+                                                                                " . (!empty($custom_fields['job_title']) ? "<p style=\"margin: 4px 0; font-size: 20px; line-height: 28px; color: #ffffff;\">{$custom_fields['job_title']}</p>" : "") . "
+                                                                                " . (!empty($custom_fields['company']) ? "<p style=\"margin: 4px 0; font-size: 20px; line-height: 28px; color: #ffffff;\">{$custom_fields['company']}</p>" : "") . "
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        
+                                                        <table class=\"contact-table\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"padding: 32px;\">
+                                                            <tr>
+                                                                <td class=\"contact-cell\" width=\"50%\" style=\"vertical-align: top;\">
+                                                                    " . (!empty($custom_fields['phone']) ? "
+                                                                    <a href=\"tel:{$custom_fields['phone']}\" class=\"contact-item\" style=\"display: block; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 16px; text-decoration: none;\">
+                                                                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                                                                            <tr>
+                                                                                <td width=\"48\" style=\"vertical-align: middle;\">
+                                                                                    <div class=\"icon-circle\" style=\"width: 48px; height: 48px; border-radius: 50%; background-color: #2563eb; text-align: center; vertical-align: middle;\">
+                                                                                        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"display: inline-block; vertical-align: middle;\">
+                                                                                            <path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z\"></path>
+                                                                                        </svg>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class=\"contact-text\" style=\"vertical-align: middle; font-size: 14px; color: #374151;\">
+                                                                                    {$custom_fields['phone']}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>" : "") . "
+                                                                    
+                                                                    " . (!empty($custom_fields['website']) ? "
+                                                                    <a href=\"{$custom_fields['website']}\" target=\"_blank\" class=\"contact-item\" style=\"display: block; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 16px; text-decoration: none;\">
+                                                                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                                                                            <tr>
+                                                                                <td width=\"48\" style=\"vertical-align: middle;\">
+                                                                                    <div class=\"icon-circle\" style=\"width: 48px; height: 48px; border-radius: 50%; background-color: #2563eb; text-align: center; vertical-align: middle;\">
+                                                                                        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"display: inline-block; vertical-align: middle;\">
+                                                                                            <circle cx=\"12\" cy=\"12\" r=\"10\"></circle>
+                                                                                            <line x1=\"2\" y1=\"12\" x2=\"22\" y2=\"12\"></line>
+                                                                                            <path d=\"M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\"></path>
+                                                                                        </svg>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class=\"contact-text\" style=\"vertical-align: middle; font-size: 14px; color: #374151;\">
+                                                                                    {$custom_fields['website']}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>" : "") . "
+                                                                </td>
+                                                                <td class=\"contact-cell\" width=\"50%\" style=\"vertical-align: top;\">
+                                                                    " . (!empty($custom_fields['email']) ? "
+                                                                    <a href=\"mailto:{$custom_fields['email']}\" class=\"contact-item\" style=\"display: block; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 16px; text-decoration: none;\">
+                                                                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                                                                            <tr>
+                                                                                <td width=\"48\" style=\"vertical-align: middle;\">
+                                                                                    <div class=\"icon-circle\" style=\"width: 48px; height: 48px; border-radius: 50%; background-color: #2563eb; text-align: center; vertical-align: middle;\">
+                                                                                        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"display: inline-block; vertical-align: middle;\">
+                                                                                            <path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"></path>
+                                                                                            <polyline points=\"22,6 12,13 2,6\"></polyline>
+                                                                                        </svg>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class=\"contact-text\" style=\"vertical-align: middle; font-size: 14px; color: #374151;\">
+                                                                                    {$custom_fields['email']}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </a>" : "") . "
+                                                                    
+                                                                    " . (!empty($custom_fields['address']) ? "
+                                                                    <div class=\"contact-item\" style=\"display: block; padding: 12px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 16px;\">
+                                                                        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
+                                                                            <tr>
+                                                                                <td width=\"48\" style=\"vertical-align: middle;\">
+                                                                                    <div class=\"icon-circle\" style=\"width: 48px; height: 48px; border-radius: 50%; background-color: #2563eb; text-align: center; vertical-align: middle;\">
+                                                                                        <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" style=\"display: inline-block; vertical-align: middle;\">
+                                                                                            <path d=\"M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\"></path>
+                                                                                            <circle cx=\"12\" cy=\"10\" r=\"3\"></circle>
+                                                                                        </svg>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class=\"contact-text\" style=\"vertical-align: middle; font-size: 14px; color: #374151;\">
+                                                                                    {$custom_fields['address']}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>" : "") . "
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            
+                                            <p class=\"link-info\" style=\"margin-top: 20px; color: #000000;\">To view the full business card, click the button below:</p>
+                                            <a href=\"http://$card_url\" class=\"btn\" style=\"display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 24px; font-weight: bold;\">View Business Card</a>
+                                            
+                                            <p class=\"link-info\" style=\"margin-top: 20px; color: #000000;\">If the button doesn't work, you can copy and paste this link into your browser:<br>http://$card_url</p>
+                                            
+                                            <div class=\"footer\" style=\"margin-top: 20px; border-top: 1px solid #e5e7eb; padding-top: 20px;\">
+                                                <p style=\"color: #000000;\">Regards,<br>Business Card Creator</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+            ";
 
         if(sendEmail($recipient_email, $subject, $body)) {
             setMessage("Business card has been shared successfully.", "success");
@@ -186,6 +381,12 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     
     $card = $stmt->fetch();
     $custom_fields = json_decode($card['custom_fields'], true);
+    
+    // Get card design information
+    $design_id = $card['design_id'];
+    $stmt = $pdo->prepare("SELECT * FROM card_designs WHERE id = ?");
+    $stmt->execute([$design_id]);
+    $design = $stmt->fetch();
 } else {
     setMessage("Invalid card ID.", "error");
     header("Location: " . BASE_URL . "pages/profile/dashboard.php");
@@ -218,6 +419,18 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
                 
                 <div class="border rounded-lg overflow-hidden shadow-md">
                     <div class="h-32 sm:h-40 <?php echo $design['bg_color']; ?> flex flex-col items-center justify-center p-4 text-white">
+                        <?php if(!empty($custom_fields['image'])): ?>
+                            <div class="w-16 h-16 mb-2 rounded-full overflow-hidden border-2 border-white shadow-md">
+                                <?php
+                                $image_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/cards/' . $custom_fields['image'];
+                                if(file_exists($image_path)) {
+                                    $imageType = pathinfo($image_path, PATHINFO_EXTENSION);
+                                    $imageData = base64_encode(file_get_contents($image_path));
+                                    echo '<img src="data:image/'.$imageType.';base64,'.$imageData.'" alt="Profile" class="w-full h-full object-cover">';
+                                }
+                                ?>
+                            </div>
+                        <?php endif; ?>
                         <h2 class="text-lg sm:text-xl font-bold mb-1"><?php echo $custom_fields['name']; ?></h2>
                         <?php if(!empty($custom_fields['job_title'])): ?>
                             <p class="text-sm sm:text-md"><?php echo $custom_fields['job_title']; ?></p>
@@ -247,6 +460,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
                                 <div class="flex items-center">
                                     <i class="fas fa-globe text-gray-600 mr-2"></i>
                                     <span><?php echo $custom_fields['website']; ?></span>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if(!empty($custom_fields['address'])): ?>
+                                <div class="flex items-center">
+                                    <i class="fas fa-map-marker-alt text-gray-600 mr-2"></i>
+                                    <span><?php echo $custom_fields['address']; ?></span>
                                 </div>
                             <?php endif; ?>
                         </div>
